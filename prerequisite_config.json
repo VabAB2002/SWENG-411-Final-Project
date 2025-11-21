@@ -1,0 +1,31 @@
+{
+  "hierarchy_rules": {
+    "enabled": true,
+    "same_department_higher_level": true,
+    "minimum_level_difference": 0,
+    "description": "Courses with higher numbers in same department satisfy lower prerequisites (e.g., MATH 140 satisfies MATH 021)"
+  },
+  "text_patterns": {
+    "or_higher_keywords": [
+      "or higher",
+      "or above",
+      "or satisfactory score",
+      "or satisfactory performance",
+      "or equivalent"
+    ],
+    "recommended_keywords": [
+      "Recommended Preparation",
+      "recommended:",
+      "Recommended:"
+    ],
+    "description": "Keywords that indicate flexible prerequisite requirements"
+  },
+  "special_cases": {
+    "high_school_algebra": {
+      "pattern": "high school algebra",
+      "satisfied_by_any_college_math": true,
+      "description": "Any college-level math course satisfies high school algebra requirement"
+    }
+  }
+}
+

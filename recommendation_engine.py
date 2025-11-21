@@ -2,203 +2,69 @@ import json
 import re
 
 # --- 1. CONFIGURATION ---
-PROGRAMS_FILE = 'academic_programs_rules_enriched.json'       
-COURSES_FILE = 'gened_courses_golden_record.json'    
-
-def normalize_code(code):
-    """
-    Aggressive normalization: "ACCTG 201" -> "ACCTG201"
-    Handles: "MATH 021" -> "MATH021" and "MATH 21" -> "MATH21"
-    """
-    if not code: return ""
-    # Remove spaces and non-alphanumeric, but keep structure
-    normalized = ''.join(ch for ch in code if ch.isalnum()).upper()
-    
-    # Special handling: Pad single-digit course numbers to 3 digits for comparison
-    # This helps match "MATH 21" with "MATH 021"
-    match = re.match(r"([A-Z]+)(\d+)([A-Z]?)", normalized)
-    if match:
-        dept = match.group(1)
-        number = match.group(2)
-        suffix = match.group(3) or ""
-        
-        # Pad to 3 digits for courses < 100
-        if len(number) <= 2:
-            number = number.zfill(3)  # "21" -> "021"
-        
-        return f"{dept}{number}{suffix}"
-    
-    return normalized
-
-def parse_course_number(code):
-    """
-    Extract department and course number for comparison
-    Returns: (dept, number) e.g. ("MATH", 140)
-    """
-    if not code: return None, 0
-    normalized = normalize_code(code)
-    match = re.match(r"([A-Z]+)(\d+)", normalized)
-    if match:
-        return match.group(1), int(match.group(2))
-    return None, 0
-
-def expand_user_history_with_equivalencies(user_history, courses_db):
-    """
-    🔥 KEY FIX: Add implied course equivalencies
-    
-    If student has MATH 140, they automatically satisfy:
-    - MATH 021 (basic math)
-    - MATH 026 (pre-calculus) 
-    - Any lower-level math
-    
-    This prevents the algorithm from adding phantom prerequisite costs.
-    """
-    expanded_history = set(user_history)
-    
-    # Common prerequisite equivalency rules for Penn State
-    equivalency_rules = {
-        # Math sequence: Higher courses satisfy all lower ones
-        'MATH': {
-            140: [21, 26, 40, 41, 110],      # Calculus I satisfies all pre-calc
-            141: [21, 26, 40, 41, 110, 140], # Calculus II satisfies Calc I + below
-            220: [21, 26, 110, 140, 141],    # Matrices satisfies calc sequence
-            230: [21, 26, 110, 140, 141, 220],
-            250: [21, 26, 110, 140, 141, 220, 230],
-        },
-        # English sequence
-        'ENGL': {
-            15: [10],      # ENGL 15 satisfies ENGL 10 if listed
-            30: [10, 15],  # ENGL 30 satisfies both
-            202: [15, 30], # Writing courses satisfy composition
-        },
-        # Computer Science sequence
-        'CMPSC': {
-            121: [101],    # CMPSC 121 satisfies intro programming
-            131: [101, 121],
-            132: [101, 121, 131],
-        },
-        # Chemistry sequence
-        'CHEM': {
-            110: [100],
-            111: [100, 110],
-        },
-        # Physics sequence  
-        'PHYS': {
-            211: [200, 201],
-            212: [200, 201, 211],
-        },
-        # Statistics
-        'STAT': {
-            200: [100],
-            414: [200, 250],
-            415: [200, 250, 414],
-        }
-    }
-    
-    # Check each course in user's history
-    for completed_course in user_history:
-        dept, number = parse_course_number(completed_course)
-        if not dept or number == 0:
-            continue
-            
-        # Check if this department has equivalency rules
-        if dept in equivalency_rules:
-            # Generic rule: Any 200+ level course satisfies 100-level in same dept
-            # (Unless specifically listed in dict keys)
-            if number >= 200:
-                 # Add common lower level markers
-                 expanded_history.add(normalize_code(f"{dept}100"))
-
-            # Specific rule lookup
-            # We check all keys in the rulebook. If user has a higher/equal course, grant the lower ones.
-            for key_num, granted_list in equivalency_rules[dept].items():
-                if number >= key_num:
-                    for granted_num in granted_list:
-                        expanded_history.add(normalize_code(f"{dept}{granted_num}"))
-    
-    return list(expanded_history)
-
-def clean_prereq_for_display(raw_text):
-    """
-    Returns None if there are no real prerequisites, hiding the Info button.
-    """
-    if not raw_text: return None
-    text = str(raw_text).strip()
-    if text in ["None", "[]", "", "['None']"]: return None
-    if text.lower() == "none": return None
-    return text
-
-def build_backup_db(programs_db):
-    """
-    Extracts course definitions from the Enriched Rules file.
-    """
-    backup_db = {}
-    
-    for prog in programs_db:
-        for rule in prog.get('rules', []):
-            
-            # Helper to add course to db
-            def add_course(c):
-                code = normalize_code(c.get('code', ''))
-                if not code: return
-                
-                raw_p = c.get('prerequisites_text', '')
-                if not raw_p:
-                    raw_p = str(c.get('prerequisites_list', []))
-
-                backup_db[code] = {
-                    "courseCode": c.get('code'),
-                    "credits": c.get('credits', 3),
-                    "title": c.get('title', ''), 
-                    "prerequisites_raw": "", # Empty for logic to avoid loops
-                    "prerequisites_display": raw_p,
-                    "genEdAttributes": c.get('genEdAttributes', []) 
-                }
-
-            # 1. Standard lists
-            for c in rule.get('courses', []):
-                add_course(c)
-
-            # 2. Group Options
-            if rule.get('type') == 'group_option':
-                for group in rule.get('groups', []):
-                    for c in group.get('courses', []):
-                        add_course(c)
-
-    print(f"   -> Extracted {len(backup_db)} course definitions from Rules.")
-    return backup_db
+PROGRAMS_FILE = 'academic_programs_rules.json'
+WORLD_CAMPUS_MASTER = 'world_campus_courses_master.json'
+GENED_SUPPLEMENTARY = 'gened_supplementary.json'    
 
 def load_data():
     print("Loading database...")
     try:
+        # Load programs (unchanged)
         with open(PROGRAMS_FILE, 'r') as f:
             programs_db = json.load(f)
         
-        with open(COURSES_FILE, 'r') as f:
-            raw_courses = json.load(f)
-            courses_db = {normalize_code(c['courseCode']): c for c in raw_courses}
-            
-        backup_db = build_backup_db(programs_db)
+        # Load World Campus master courses (primary)
+        with open(WORLD_CAMPUS_MASTER, 'r') as f:
+            master_courses = json.load(f)
         
-        for code, data in backup_db.items():
-            if code in courses_db:
-                existing_geneds = courses_db[code].get('genEdAttributes', [])
-                courses_db[code].update(data)
-                if not data.get('genEdAttributes') and existing_geneds:
-                     courses_db[code]['genEdAttributes'] = existing_geneds
-            else:
-                data['prerequisites_raw'] = data.pop('prerequisites_display', '')
-                courses_db[code] = data
-                
-        print(f"Loaded {len(programs_db)} Programs.")
-        print(f"Loaded {len(courses_db)} Total Courses.")
-        return programs_db, courses_db
+        # Load supplementary GenEd courses (fallback)
+        with open(GENED_SUPPLEMENTARY, 'r') as f:
+            supplementary_courses = json.load(f)
         
+        # Merge with master taking priority (master overwrites supplementary)
+        courses_db = {**supplementary_courses, **master_courses}
+        
+        # Load prerequisite configuration
+        try:
+            with open('prerequisite_config.json', 'r') as f:
+                prereq_config = json.load(f)
+            print(f"  → Loaded prerequisite config (hierarchy rules: {prereq_config.get('hierarchy_rules', {}).get('enabled', False)})")
+        except FileNotFoundError:
+            print(f"  ⚠️  prerequisite_config.json not found, using defaults")
+            prereq_config = {
+                "hierarchy_rules": {"enabled": True, "same_department_higher_level": True, "minimum_level_difference": 0}
+            }
+        
+        # Load course equivalencies
+        try:
+            with open('course_equivalencies.json', 'r') as f:
+                equivalency_map = json.load(f)
+            print(f"  → Loaded {len(equivalency_map)} course equivalencies")
+        except FileNotFoundError:
+            print(f"  ⚠️  course_equivalencies.json not found, equivalencies disabled")
+            equivalency_map = {}
+        
+        print(f"Loaded {len(programs_db)} Programs and {len(courses_db)} Course Definitions.")
+        print(f"  → {len(master_courses)} World Campus courses")
+        print(f"  → {len(supplementary_courses)} supplementary courses")
+        return programs_db, courses_db, equivalency_map, prereq_config
     except FileNotFoundError as e:
         print(f"CRITICAL ERROR: Missing file. {e}")
-        return [], {}
+        return [], {}, {}, {}
 
 # --- 2. PARSING & UTILS ---
+
+def normalize_code(code):
+    if not code: return ""
+    return code.replace(" ", "").replace("\xa0", "").upper()
+
+def parse_course_string(course_code):
+    if not course_code: return None, 0
+    clean = normalize_code(course_code)
+    match = re.match(r"([A-Z]+)(\d+)", clean)
+    if match:
+        return match.group(1), int(match.group(2))
+    return None, 0
 
 def get_course_credits(code, courses_db, default=3.0):
     norm_code = normalize_code(code)
@@ -209,8 +75,58 @@ def get_course_credits(code, courses_db, default=3.0):
         except: return default
     return default
 
+def get_course_prereqs(code, courses_db):
+    """Fetches raw prerequisite text for display."""
+    norm_code = normalize_code(code)
+    if norm_code in courses_db:
+        return courses_db[norm_code].get('prerequisites_raw', 'No prerequisites listed.')
+    return "No data available."
+
 def extract_course_codes(text_chunk):
     return re.findall(r"([A-Z]{2,5}\s+\d{1,4}[A-Z]?)", text_chunk)
+
+def course_satisfies_prerequisite(required_code, user_history, equivalency_map=None, prereq_config=None):
+    """
+    Intelligent prerequisite checking with three tiers:
+    
+    Tier 1: Exact match - Direct course code match
+    Tier 2: Equivalency map - Explicitly defined equivalent courses
+    Tier 3: Hierarchy rules - Same department, higher level courses
+    
+    Args:
+        required_code: The prerequisite course code
+        user_history: List of normalized course codes from user's transcript
+        equivalency_map: Dictionary of course equivalencies
+        prereq_config: Configuration dict with hierarchy rules
+    
+    Returns:
+        Boolean indicating if prerequisite is satisfied
+    """
+    norm_required = normalize_code(required_code)
+    
+    # Tier 1: Exact match
+    if norm_required in user_history:
+        return True
+    
+    # Tier 2: Check equivalency map
+    if equivalency_map and norm_required in equivalency_map:
+        equivalents = equivalency_map[norm_required].get('equivalents', [])
+        for equiv in equivalents:
+            if normalize_code(equiv) in user_history:
+                return True
+    
+    # Tier 3: Check same-department higher-level courses (if enabled)
+    if prereq_config and prereq_config.get('hierarchy_rules', {}).get('same_department_higher_level', False):
+        req_dept, req_num = parse_course_string(required_code)
+        min_diff = prereq_config.get('hierarchy_rules', {}).get('minimum_level_difference', 0)
+        
+        if req_dept and req_num > 0:
+            for user_course in user_history:
+                user_dept, user_num = parse_course_string(user_course)
+                if user_dept == req_dept and user_num >= req_num + min_diff:
+                    return True
+    
+    return False
 
 def parse_prerequisites_to_tree(raw_text):
     if not raw_text or "None" in raw_text: return []
@@ -224,23 +140,19 @@ def parse_prerequisites_to_tree(raw_text):
             logic_tree.append(list(set(codes)))
     return logic_tree
 
-# --- 3. COST CALCULATOR (WITH FIX) ---
+# --- 3. COST CALCULATOR ---
 
-def calculate_recursive_cost(code, expanded_history, courses_db, visited=None, known_credits=None):
-    """
-    🔥 FIXED: Now uses expanded history with equivalencies
-    """
+def calculate_recursive_cost(code, user_history, courses_db, visited=None, known_credits=None, equivalency_map=None, prereq_config=None):
     norm_code = normalize_code(code)
     
-    # Check against expanded history (includes implied prerequisites)
-    if norm_code in expanded_history:
+    # Use intelligent prerequisite checking
+    if course_satisfies_prerequisite(code, user_history, equivalency_map, prereq_config):
         return 0
     
     if visited is None: visited = set()
     if norm_code in visited: return 0
     visited.add(norm_code)
 
-    # Get course's own cost
     if norm_code in courses_db:
         own_cost = get_course_credits(norm_code, courses_db)
     elif known_credits is not None:
@@ -248,11 +160,8 @@ def calculate_recursive_cost(code, expanded_history, courses_db, visited=None, k
     else:
         own_cost = 3.0
     
-    # If course not in database, can't calculate prerequisites
-    if norm_code not in courses_db: 
-        return own_cost 
+    if norm_code not in courses_db: return own_cost 
 
-    # Calculate prerequisite cost
     raw_prereqs = courses_db[norm_code].get('prerequisites_raw', '')
     logic_tree = parse_prerequisites_to_tree(raw_prereqs)
     
@@ -260,10 +169,9 @@ def calculate_recursive_cost(code, expanded_history, courses_db, visited=None, k
     for or_group in logic_tree:
         group_costs = []
         for option in or_group:
-            cost = calculate_recursive_cost(option, expanded_history, courses_db, visited.copy())
+            cost = calculate_recursive_cost(option, user_history, courses_db, visited.copy(), None, equivalency_map, prereq_config)
             group_costs.append(cost)
-        if group_costs: 
-            total_prereq_cost += min(group_costs)
+        if group_costs: total_prereq_cost += min(group_costs)
 
     return own_cost + total_prereq_cost
 
@@ -287,7 +195,7 @@ def calculate_dynamic_gap(rule, user_history, courses_db):
     credits_in_b = 0
     
     for norm_code in user_history:
-        dept, number = parse_course_number(norm_code)
+        dept, number = parse_course_string(norm_code)
         if not dept: continue
 
         if dept in pool_a.get('departments', []) and pool_a.get('level_min', 0) <= number <= pool_a.get('level_max', 999):
@@ -312,24 +220,12 @@ def calculate_dynamic_gap(rule, user_history, courses_db):
         missing_desc.append(f"Need {int(gap - missing_a)} cr: Any options from list")
     return gap, missing_desc
 
-# --- 5. MAIN CALCULATOR (WITH FIX) ---
+# --- 5. MAIN CALCULATOR ---
 
-def calculate_program_gap(program, user_history, courses_db, major_courses=[]):
-    """
-    🔥 FIXED: Expands user history with equivalencies before calculations
-    """
-    # EXPAND HISTORY WITH IMPLIED PREREQUISITES
-    expanded_history = expand_user_history_with_equivalencies(user_history, courses_db)
-    
-    # Convert to set of normalized codes for fast lookup
-    expanded_history_set = set(normalize_code(c) for c in expanded_history)
-    
-    # Also keep a set of just the "Explicit" major courses for the UI tag
-    major_courses_set = set(normalize_code(c) for c in major_courses)
-
+def calculate_program_gap(program, user_history, courses_db, major_courses=[], equivalency_map=None, prereq_config=None):
     total_gap_credits = 0
     missing_courses = []
-
+    
     for rule in program.get('rules', []):
         
         if rule.get('type') == 'all':
@@ -338,22 +234,16 @@ def calculate_program_gap(program, user_history, courses_db, major_courses=[]):
                 code_norm = normalize_code(code_display)
                 rule_credits = course.get('credits', 3.0)
 
-                if code_norm in expanded_history_set:
-                    # Check if it was covered specifically by Major explicit list
-                    if code_norm in major_courses_set:
-                         missing_courses.append({"text": f"{code_display} (Covered by Major)", "status": "major_covered"})
-                    continue # Done
+                if code_norm in user_history: continue 
+                if code_norm in major_courses:
+                    missing_courses.append({"text": f"{code_display} (Covered by Major)", "status": "major_covered"})
+                    continue 
                 
-                # Use expanded history for cost calculation
-                cost = calculate_recursive_cost(code_display, expanded_history_set, courses_db, known_credits=rule_credits)
+                cost = calculate_recursive_cost(code_display, user_history, courses_db, known_credits=rule_credits, equivalency_map=equivalency_map, prereq_config=prereq_config)
                 if cost > 0:
                     total_gap_credits += cost
-                    # UI Data
-                    raw_p = courses_db.get(code_norm, {}).get('prerequisites_display', '') 
-                    if not raw_p: 
-                        raw_p = courses_db.get(code_norm, {}).get('prerequisites_raw', '')
-                    prereqs = clean_prereq_for_display(raw_p)
-                    
+                    # Add Prereq info here for UI
+                    prereqs = get_course_prereqs(code_display, courses_db)
                     missing_courses.append({
                         "text": code_display, 
                         "status": "missing",
@@ -370,77 +260,70 @@ def calculate_program_gap(program, user_history, courses_db, major_courses=[]):
                 code_norm = normalize_code(code_display)
                 c_credits = get_course_credits(code_norm, courses_db, default=float(course.get('credits', 3)))
                 
-                if code_norm in expanded_history_set: 
-                    credits_earned += c_credits
-                elif code_norm in major_courses_set: # Check original major list too
-                    credits_earned += c_credits
-                else: 
-                    potential_options.append(code_display)
+                if code_norm in user_history: credits_earned += c_credits
+                elif code_norm in major_courses: credits_earned += c_credits
+                else: potential_options.append(code_display)
 
             remaining = max(0, credits_needed - credits_earned)
             if remaining > 0:
                 total_gap_credits += remaining
-                options_str = ", ".join(potential_options) 
+                options_str = ", ".join(potential_options[:3]) 
+                if len(potential_options) > 3: options_str += "..."
                 missing_courses.append({"text": f"Select {int(remaining)} credits from: {options_str}", "status": "subset_missing"})
 
         elif rule.get('type') == 'dynamic_subset':
-            d_gap, d_missing = calculate_dynamic_gap(rule, expanded_history_set, courses_db)
+            d_gap, d_missing = calculate_dynamic_gap(rule, user_history, courses_db)
             total_gap_credits += d_gap
             for msg in d_missing:
                 missing_courses.append({"text": msg, "status": "missing"})
                 
         elif rule.get('type') == 'group_option':
             best_gap = 999
-            best_text = ""
-            best_prereq = None
+            best_option_text = ""
             
             for group in rule.get('groups', []):
-                g_gap = 0
-                g_text = []
-                
+                group_gap = 0
+                group_text = []
                 for course in group.get('courses', []):
-                    display = course['code']
-                    norm = normalize_code(display)
-                    rule_cr = course.get('credits', 3.0)
+                    code_display = course['code']
+                    code_norm = normalize_code(code_display)
+                    rule_credits = course.get('credits', 3.0)
                     
-                    if norm not in expanded_history_set:
-                        cost = calculate_recursive_cost(display, expanded_history_set, courses_db, known_credits=rule_cr)
-                        g_gap += cost
-                        g_text.append(display)
+                    if code_norm not in user_history and code_norm not in major_courses:
+                        cost = calculate_recursive_cost(code_display, user_history, courses_db, known_credits=rule_credits, equivalency_map=equivalency_map, prereq_config=prereq_config)
+                        group_gap += cost
+                        group_text.append(code_display)
                 
-                if g_gap < best_gap:
-                    best_gap = g_gap
-                    best_text = " + ".join(g_text)
-                    if g_text:
-                        first = normalize_code(g_text[0])
-                        raw_p = courses_db.get(first, {}).get('prerequisites_display', '')
-                        if not raw_p: 
-                            raw_p = courses_db.get(first, {}).get('prerequisites_raw', '')
-                        best_prereq = clean_prereq_for_display(raw_p)
+                if group_gap < best_gap:
+                    best_gap = group_gap
+                    if group_gap == 0: best_option_text = "Completed"
+                    else: best_option_text = " + ".join(group_text)
 
             if best_gap > 0:
                 total_gap_credits += best_gap
-                missing_courses.append({
-                    "text": f"Take: {best_text}", 
-                    "status": "missing",
-                    "prereqs": best_prereq
-                })
+                missing_courses.append({"text": f"Take: {best_option_text}", "status": "missing"})
 
     return total_gap_credits, missing_courses
 
 def find_triple_dips(program, user_needs, courses_db):
     opportunities = []
-    all_codes = []
+    all_program_courses = []
     for rule in program.get('rules', []):
-        for c in rule.get('courses', []): all_codes.append(normalize_code(c['code']))
+        for c in rule.get('courses', []):
+            all_program_courses.append(normalize_code(c['code']))
+        if rule.get('type') == 'dynamic_subset':
+            secondary = rule.get('constraints', {}).get('secondary_pool', {}).get('courses', [])
+            all_program_courses.extend([normalize_code(c) for c in secondary])
         if rule.get('type') == 'group_option':
-            for g in rule.get('groups', []):
-                for c in g.get('courses', []): all_codes.append(normalize_code(c['code']))
-                
-    for norm in set(all_codes):
-        if norm in courses_db:
-            c_data = courses_db[norm]
-            matches = [req for req in user_needs if req in c_data.get('genEdAttributes', [])]
+             for g in rule.get('groups', []):
+                 for c in g.get('courses', []):
+                     all_program_courses.append(normalize_code(c['code']))
+            
+    for norm_code in set(all_program_courses):
+        if norm_code in courses_db:
+            c_data = courses_db[norm_code]
+            attrs = c_data.get('genEdAttributes', [])
+            matches = [req for req in user_needs if req in attrs]
             if matches:
-                opportunities.append({"course": c_data['courseCode'], "matches": matches})
+                opportunities.append({"course": c_data['courseCode'], "matches": matches, "title": c_data.get('title', '')})
     return opportunities

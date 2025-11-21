@@ -1,0 +1,986 @@
+{
+  "ENGL15": {
+    "equivalents": [
+      "ENGL202D",
+      "ENGL30"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "ENGL30": {
+    "equivalents": [
+      "ENGL15",
+      "ENGL202D"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "ECON102": {
+    "equivalents": [
+      "ECON104",
+      "ECON302",
+      "ECON315",
+      "ECON333",
+      "ECON351"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "ECON104": {
+    "equivalents": [
+      "ECON102",
+      "ECON304",
+      "ECON333",
+      "ECON351"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "STAT200": {
+    "equivalents": [
+      "STAT250"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "STAT250": {
+    "equivalents": [
+      "STAT200"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "BBH101": {
+    "equivalents": [
+      "BBH101H",
+      "BBH301W",
+      "BBH305",
+      "BBH310",
+      "BBH311",
+      "BBH315",
+      "BBH316",
+      "BBH411W",
+      "BBH432",
+      "BBH440(U.S.;IL)",
+      "BBH451"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "BBH101H": {
+    "equivalents": [
+      "BBH101"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "BIOL141": {
+    "equivalents": [
+      "BIOL161"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "BIOL161": {
+    "equivalents": [
+      "BIOL141"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "HDFS315Y": {
+    "equivalents": [
+      "HDFS315W"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "HDFS315W": {
+    "equivalents": [
+      "HDFS315Y"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "ENGL015": {
+    "equivalents": [
+      "ENGL030",
+      "ENGL215",
+      "ENGL419"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "ENGL030": {
+    "equivalents": [
+      "ENGL015",
+      "ENGL215",
+      "ENGL419"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "CYBER100": {
+    "equivalents": [
+      "CYBER100S",
+      "CYBER262"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "CYBER100S": {
+    "equivalents": [
+      "CYBER100"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "ETI301": {
+    "equivalents": [
+      "ETI302"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "ETI302": {
+    "equivalents": [
+      "ETI301"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "IST240": {
+    "equivalents": [
+      "IST242"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "IST242": {
+    "equivalents": [
+      "IST240",
+      "IST256",
+      "IST261"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "SCM301": {
+    "equivalents": [
+      "SCM310",
+      "SCM340",
+      "SCM445",
+      "SCM455",
+      "SCM460"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "SCM310": {
+    "equivalents": [
+      "SCM301",
+      "SCM455",
+      "SCM460"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "CMPEN270": {
+    "equivalents": [
+      "CMPEN271"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "CMPEN271": {
+    "equivalents": [
+      "CMPEN270"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "CMPSC121": {
+    "equivalents": [
+      "CMPSC201"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "CMPSC201": {
+    "equivalents": [
+      "CMPSC121"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "CMPSC122": {
+    "equivalents": [
+      "CMPSC132",
+      "CMPSC360",
+      "CMPSC445",
+      "CMPSC465"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "CMPSC132": {
+    "equivalents": [
+      "CMPSC122"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern"
+  },
+  "TURF434": {
+    "equivalents": [
+      "TURF435",
+      "TURF436W"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "TURF435": {
+    "equivalents": [
+      "TURF434",
+      "TURF436W"
+    ],
+    "reason": "Appears as alternative in prerequisite text",
+    "auto_generated": true,
+    "type": "or_pattern+hierarchy"
+  },
+  "ACCTG211": {
+    "equivalents": [
+      "ACCTG305",
+      "ACCTG310",
+      "ACCTG340",
+      "ACCTG404",
+      "ACCTG405",
+      "ACCTG471"
+    ],
+    "reason": "Foundation course in ACCTG - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ACCTG311": {
+    "equivalents": [
+      "ACCTG340",
+      "ACCTG462",
+      "ACCTG471"
+    ],
+    "reason": "Foundation course in ACCTG - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ACCTG371": {
+    "equivalents": [
+      "ACCTG403",
+      "ACCTG472"
+    ],
+    "reason": "Foundation course in ACCTG - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ACCTG471": {
+    "equivalents": [
+      "ACCTG472"
+    ],
+    "reason": "Foundation course in ACCTG - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "MIS204": {
+    "equivalents": [
+      "MIS336",
+      "MIS390",
+      "MIS404"
+    ],
+    "reason": "Foundation course in MIS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "SCM200": {
+    "equivalents": [
+      "SCM301"
+    ],
+    "reason": "Foundation course in SCM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "MATH022": {
+    "equivalents": [
+      "MATH110"
+    ],
+    "reason": "Foundation course in MATH - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "AGBM101": {
+    "equivalents": [
+      "AGBM106",
+      "AGBM302",
+      "AGBM308W",
+      "AGBM320"
+    ],
+    "reason": "Foundation course in AGBM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "AGBM102": {
+    "equivalents": [
+      "AGBM302",
+      "AGBM308W",
+      "AGBM320"
+    ],
+    "reason": "Foundation course in AGBM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "AGBM106": {
+    "equivalents": [
+      "AGBM302",
+      "AGBM308W",
+      "AGBM320"
+    ],
+    "reason": "Foundation course in AGBM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "BBH310": {
+    "equivalents": [
+      "BBH411W",
+      "BBH416"
+    ],
+    "reason": "Foundation course in BBH - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "CHEM110": {
+    "equivalents": [
+      "CHEM111",
+      "CHEM202"
+    ],
+    "reason": "Foundation course in CHEM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "CHEM106": {
+    "equivalents": [
+      "CHEM111",
+      "CHEM202"
+    ],
+    "reason": "Foundation course in CHEM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PSYCH100": {
+    "equivalents": [
+      "PSYCH105",
+      "PSYCH200",
+      "PSYCH212",
+      "PSYCH221",
+      "PSYCH231",
+      "PSYCH238",
+      "PSYCH243",
+      "PSYCH256",
+      "PSYCH260",
+      "PSYCH270",
+      "PSYCH281",
+      "PSYCH301W",
+      "PSYCH408",
+      "PSYCH441",
+      "PSYCH470",
+      "PSYCH484",
+      "PSYCH485"
+    ],
+    "reason": "Foundation course in PSYCH - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HDFS129": {
+    "equivalents": [
+      "HDFS311",
+      "HDFS315Y"
+    ],
+    "reason": "Foundation course in HDFS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HDFS312": {
+    "equivalents": [
+      "HDFS411",
+      "HDFS414",
+      "HDFS418",
+      "HDFS428",
+      "HDFS429",
+      "HDFS433",
+      "HDFS445",
+      "HDFS490"
+    ],
+    "reason": "Foundation course in HDFS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HDFS315": {
+    "equivalents": [
+      "HDFS418"
+    ],
+    "reason": "Foundation course in HDFS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HDFS229": {
+    "equivalents": [
+      "HDFS428",
+      "HDFS429"
+    ],
+    "reason": "Foundation course in HDFS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HDFS239": {
+    "equivalents": [
+      "HDFS433"
+    ],
+    "reason": "Foundation course in HDFS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HDFS311": {
+    "equivalents": [
+      "HDFS411",
+      "HDFS455"
+    ],
+    "reason": "Foundation course in HDFS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "BA321": {
+    "equivalents": [
+      "BA420",
+      "BA421",
+      "BA422W",
+      "BA495A"
+    ],
+    "reason": "Foundation course in BA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "BA322": {
+    "equivalents": [
+      "BA420",
+      "BA421",
+      "BA422W",
+      "BA495A"
+    ],
+    "reason": "Foundation course in BA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "FIN301": {
+    "equivalents": [
+      "FIN416",
+      "FIN420",
+      "FIN451",
+      "FIN471"
+    ],
+    "reason": "Foundation course in FIN - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HPA101": {
+    "equivalents": [
+      "HPA210",
+      "HPA301W",
+      "HPA311",
+      "HPA332",
+      "HPA390W"
+    ],
+    "reason": "Foundation course in HPA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "CAS100": {
+    "equivalents": [
+      "CAS404"
+    ],
+    "reason": "Foundation course in CAS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PSYCH200": {
+    "equivalents": [
+      "PSYCH301W",
+      "PSYCH408",
+      "PSYCH484"
+    ],
+    "reason": "Foundation course in PSYCH - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PSYCH281": {
+    "equivalents": [
+      "PSYCH485"
+    ],
+    "reason": "Foundation course in PSYCH - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "CRIMJ100": {
+    "equivalents": [
+      "CRIMJ210",
+      "CRIMJ220",
+      "CRIMJ260",
+      "CRIMJ408",
+      "CRIMJ430",
+      "CRIMJ441",
+      "CRIMJ450W",
+      "CRIMJ465"
+    ],
+    "reason": "Foundation course in CRIMJ - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "CYBER262": {
+    "equivalents": [
+      "CYBER342W",
+      "CYBER362",
+      "CYBER366"
+    ],
+    "reason": "Foundation course in CYBER - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "IST301": {
+    "equivalents": [
+      "IST402",
+      "IST423",
+      "IST432"
+    ],
+    "reason": "Foundation course in IST - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "SRA211": {
+    "equivalents": [
+      "SRA231",
+      "SRA421"
+    ],
+    "reason": "Foundation course in SRA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "SRA231": {
+    "equivalents": [
+      "SRA311",
+      "SRA421",
+      "SRA471"
+    ],
+    "reason": "Foundation course in SRA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ENGL137": {
+    "equivalents": [
+      "ENGL202D",
+      "ENGL478"
+    ],
+    "reason": "Foundation course in ENGL - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ENGL138": {
+    "equivalents": [
+      "ENGL202C",
+      "ENGL202D",
+      "ENGL478"
+    ],
+    "reason": "Foundation course in ENGL - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "IST140": {
+    "equivalents": [
+      "IST242"
+    ],
+    "reason": "Foundation course in IST - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "COMM260": {
+    "equivalents": [
+      "COMM269",
+      "COMM282",
+      "COMM310",
+      "COMM364",
+      "COMM410",
+      "COMM460W",
+      "COMM461",
+      "COMM467"
+    ],
+    "reason": "Foundation course in COMM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "COMM180": {
+    "equivalents": [
+      "COMM380",
+      "COMM403",
+      "COMM410",
+      "COMM492"
+    ],
+    "reason": "Foundation course in COMM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "COMM271": {
+    "equivalents": [
+      "COMM403",
+      "COMM492"
+    ],
+    "reason": "Foundation course in COMM - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ECON106": {
+    "equivalents": [
+      "ECON306",
+      "ECON402"
+    ],
+    "reason": "Foundation course in ECON - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ECON302": {
+    "equivalents": [
+      "ECON402",
+      "ECON425",
+      "ECON428",
+      "ECON433",
+      "ECON471"
+    ],
+    "reason": "Foundation course in ECON - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ECON323": {
+    "equivalents": [
+      "ECON425",
+      "ECON428"
+    ],
+    "reason": "Foundation course in ECON - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ECON333": {
+    "equivalents": [
+      "ECON433",
+      "ECON434"
+    ],
+    "reason": "Foundation course in ECON - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ECON304": {
+    "equivalents": [
+      "ECON434",
+      "ECON471"
+    ],
+    "reason": "Foundation course in ECON - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ECON372": {
+    "equivalents": [
+      "ECON471"
+    ],
+    "reason": "Foundation course in ECON - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HCDD311": {
+    "equivalents": [
+      "HCDD361",
+      "HCDD411",
+      "HCDD412"
+    ],
+    "reason": "Foundation course in HCDD - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "MGMT301": {
+    "equivalents": [
+      "MGMT341",
+      "MGMT410",
+      "MGMT461",
+      "MGMT471W"
+    ],
+    "reason": "Foundation course in MGMT - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "DA101": {
+    "equivalents": [
+      "DA201W",
+      "DA301",
+      "DA305"
+    ],
+    "reason": "Foundation course in DA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PSYCH301": {
+    "equivalents": [
+      "PSYCH408",
+      "PSYCH490"
+    ],
+    "reason": "Foundation course in PSYCH - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HPA332": {
+    "equivalents": [
+      "HPA395",
+      "HPA430",
+      "HPA442",
+      "HPA460",
+      "HPA475"
+    ],
+    "reason": "Foundation course in HPA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "HPA311": {
+    "equivalents": [
+      "HPA430",
+      "HPA438",
+      "HPA440"
+    ],
+    "reason": "Foundation course in HPA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PLSC14": {
+    "equivalents": [
+      "PLSC418W",
+      "PLSC442"
+    ],
+    "reason": "Foundation course in PLSC - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PLSC1": {
+    "equivalents": [
+      "PLSC410",
+      "PLSC468",
+      "PLSC471",
+      "PLSC472",
+      "PLSC473",
+      "PLSC480W",
+      "PLSC490"
+    ],
+    "reason": "Foundation course in PLSC - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PLSC3": {
+    "equivalents": [
+      "PLSC410",
+      "PLSC468"
+    ],
+    "reason": "Foundation course in PLSC - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PLSC001": {
+    "equivalents": [
+      "PLSC438"
+    ],
+    "reason": "Foundation course in PLSC - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PLSC014": {
+    "equivalents": [
+      "PLSC438"
+    ],
+    "reason": "Foundation course in PLSC - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PLSC200": {
+    "equivalents": [
+      "PLSC456"
+    ],
+    "reason": "Foundation course in PLSC - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "SRA111": {
+    "equivalents": [
+      "SRA211",
+      "SRA421",
+      "SRA468"
+    ],
+    "reason": "Foundation course in SRA - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "LHR100": {
+    "equivalents": [
+      "LHR304",
+      "LHR305",
+      "LHR403",
+      "LHR428",
+      "LHR434",
+      "LHR437",
+      "LHR460"
+    ],
+    "reason": "Foundation course in LHR - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "MKTG301": {
+    "equivalents": [
+      "MKTG327",
+      "MKTG342",
+      "MKTG445",
+      "MKTG476",
+      "MKTG478"
+    ],
+    "reason": "Foundation course in MKTG - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "NURS225": {
+    "equivalents": [
+      "NURS305",
+      "NURS306",
+      "NURS409"
+    ],
+    "reason": "Foundation course in NURS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "NURS230": {
+    "equivalents": [
+      "NURS305",
+      "NURS306",
+      "NURS409"
+    ],
+    "reason": "Foundation course in NURS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "ENGL202": {
+    "equivalents": [
+      "ENGL418",
+      "ENGL419",
+      "ENGL478"
+    ],
+    "reason": "Foundation course in ENGL - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "CAS202": {
+    "equivalents": [
+      "CAS452W"
+    ],
+    "reason": "Foundation course in CAS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "CAS252": {
+    "equivalents": [
+      "CAS452W"
+    ],
+    "reason": "Foundation course in CAS - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "OLEAD100": {
+    "equivalents": [
+      "OLEAD410",
+      "OLEAD411"
+    ],
+    "reason": "Foundation course in OLEAD - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "PLSC309": {
+    "equivalents": [
+      "PLSC404",
+      "PLSC429",
+      "PLSC447"
+    ],
+    "reason": "Foundation course in PLSC - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "IST432": {
+    "equivalents": [
+      "IST452"
+    ],
+    "reason": "Foundation course in IST - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "MATH140": {
+    "equivalents": [
+      "MATH141",
+      "MATH220"
+    ],
+    "reason": "Foundation course in MATH - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "TURF235": {
+    "equivalents": [
+      "TURF307",
+      "TURF425",
+      "TURF434",
+      "TURF435",
+      "TURF436W"
+    ],
+    "reason": "Foundation course in TURF - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  },
+  "METEO101": {
+    "equivalents": [
+      "METEO241",
+      "METEO361",
+      "METEO410"
+    ],
+    "reason": "Foundation course in METEO - higher-level courses satisfy this prerequisite",
+    "auto_generated": true,
+    "type": "hierarchy"
+  }
+}

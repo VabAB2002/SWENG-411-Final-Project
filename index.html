@@ -197,9 +197,9 @@
                     } else if (item.status === 'subset_missing') {
                         todoHtml += `<li class="missing-item subset-item">${item.text}</li>`;
                     } else {
-                        // Add Info Button for Prereqs
+                        // Add Info Button for Prereqs (only if data exists)
                         let infoBtn = '';
-                        if (item.prereqs) {
+                        if (item.prereqs && item.prereqs !== 'No data available.' && item.prereqs !== 'No prerequisites listed.') {
                             infoBtn = `<span class="info-icon" title="Prerequisites: ${item.prereqs}" onclick="alert('Prerequisites for ${item.text}:\\n' + '${item.prereqs}')">ℹ️</span>`;
                         }
                         todoHtml += `<li class="missing-item"><span>${item.text}</span>${infoBtn}</li>`;
