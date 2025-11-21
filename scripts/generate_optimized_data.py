@@ -192,14 +192,20 @@ def main():
     print("🚀 World Campus Data Optimization Script")
     print("=" * 60)
     
+    # Setup paths
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(script_dir)
+    data_dir = os.path.join(project_root, 'data')
+    
     # Load source data
     print("\n📂 Loading source data files...")
     try:
-        with open('academic_programs_rules.json', 'r', encoding='utf-8') as f:
+        with open(os.path.join(data_dir, 'academic_programs_rules.json'), 'r', encoding='utf-8') as f:
             programs_data = json.load(f)
         print(f"   ✓ Loaded academic_programs_rules.json ({len(programs_data)} programs)")
         
-        with open('gened_courses_golden_record.json', 'r', encoding='utf-8') as f:
+        with open(os.path.join(data_dir, 'gened_courses_golden_record.json'), 'r', encoding='utf-8') as f:
             gened_courses = json.load(f)
         print(f"   ✓ Loaded gened_courses_golden_record.json ({len(gened_courses)} courses)")
     except FileNotFoundError as e:
@@ -213,7 +219,7 @@ def main():
     world_campus_courses, conflicts = extract_courses_from_programs(programs_data)
     
     # Phase 2: Save conflicts for review
-    save_conflicts(conflicts)
+    save_conflicts(conflicts, os.path.join(data_dir, 'duplicate_conflicts.json'))
     
     # Phase 3: Enrich with GenEd data
     world_campus_courses = enrich_with_gened_data(world_campus_courses, gened_courses)
@@ -225,14 +231,14 @@ def main():
     print("\n💾 Saving world_campus_courses_master.json...")
     # Sort by course code for readability
     sorted_master = dict(sorted(world_campus_courses.items()))
-    with open('world_campus_courses_master.json', 'w', encoding='utf-8') as f:
+    with open(os.path.join(data_dir, 'world_campus_courses_master.json'), 'w', encoding='utf-8') as f:
         json.dump(sorted_master, f, indent=2, ensure_ascii=False)
     print(f"   ✓ Saved {len(sorted_master)} World Campus courses")
     
     # Phase 6: Save supplementary file
     print("\n💾 Saving gened_supplementary.json...")
     sorted_supplementary = dict(sorted(supplementary_courses.items()))
-    with open('gened_supplementary.json', 'w', encoding='utf-8') as f:
+    with open(os.path.join(data_dir, 'gened_supplementary.json'), 'w', encoding='utf-8') as f:
         json.dump(sorted_supplementary, f, indent=2, ensure_ascii=False)
     print(f"   ✓ Saved {len(sorted_supplementary)} supplementary courses")
     

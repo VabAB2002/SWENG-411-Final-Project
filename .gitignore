@@ -7,22 +7,38 @@ __pycache__/
 venv/
 env/
 ENV/
-.venv
+*.egg-info/
+dist/
+build/
 
 # Flask
 instance/
 .webassets-cache
 
-# Uploads
-uploads/*
-!uploads/.gitkeep
-
-# IDE
-.vscode/
+# PyCharm
 .idea/
-*.swp
-*.swo
-*~
+
+# VS Code
+.vscode/
+
+# Uploads
+backend/uploads/*.pdf
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Frontend build
+frontend/dist/
+frontend/build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
 
 # OS
 .DS_Store
@@ -30,9 +46,15 @@ Thumbs.db
 
 # Logs
 *.log
-server.log
+logs/
 
-# Data files (if too large, consider git-lfs)
-# Uncomment if you don't want to track these
-# *.json
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
 
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~

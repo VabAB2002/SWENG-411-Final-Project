@@ -2,9 +2,13 @@ import json
 import re
 
 # --- 1. CONFIGURATION ---
-PROGRAMS_FILE = 'academic_programs_rules.json'
-WORLD_CAMPUS_MASTER = 'world_campus_courses_master.json'
-GENED_SUPPLEMENTARY = 'gened_supplementary.json'    
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, 'data')
+
+PROGRAMS_FILE = os.path.join(DATA_DIR, 'academic_programs_rules.json')
+WORLD_CAMPUS_MASTER = os.path.join(DATA_DIR, 'world_campus_courses_master.json')
+GENED_SUPPLEMENTARY = os.path.join(DATA_DIR, 'gened_supplementary.json')    
 
 def load_data():
     print("Loading database...")
@@ -26,7 +30,8 @@ def load_data():
         
         # Load prerequisite configuration
         try:
-            with open('prerequisite_config.json', 'r') as f:
+            prereq_config_path = os.path.join(os.path.dirname(__file__), 'config', 'prerequisite_config.json')
+            with open(prereq_config_path, 'r') as f:
                 prereq_config = json.load(f)
             print(f"  → Loaded prerequisite config (hierarchy rules: {prereq_config.get('hierarchy_rules', {}).get('enabled', False)})")
         except FileNotFoundError:
@@ -37,7 +42,8 @@ def load_data():
         
         # Load course equivalencies
         try:
-            with open('course_equivalencies.json', 'r') as f:
+            equivalency_path = os.path.join(DATA_DIR, 'course_equivalencies.json')
+            with open(equivalency_path, 'r') as f:
                 equivalency_map = json.load(f)
             print(f"  → Loaded {len(equivalency_map)} course equivalencies")
         except FileNotFoundError:
