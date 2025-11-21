@@ -174,10 +174,10 @@
         const filter = document.getElementById('interestFilter').value;
 
         try {
-            const response = await fetch('http://127.0.0.1:5001/recommend', {
+            const response = await fetch('http://127.0.0.1:5001/api/student/input', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ history, major, gen_ed_needs: genEds, interest_filter: filter })
+                body: JSON.stringify({ courseList: history, major, gen_ed_needs: genEds, interest_filter: filter })
             });
             const data = await response.json();
             resultsArea.innerHTML = '';

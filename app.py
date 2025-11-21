@@ -6,7 +6,7 @@ import transcript_parser
 import traceback
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # Configuration for Uploads
 UPLOAD_FOLDER = 'uploads'
