@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penn State Degree Optimizer</title>
+    <style>
+        :root {
+            --primary: #1E407C;
+            --secondary: #001E44;
+            --bg: #f4f4f9;
+            --missing-color: #d32f2f;
+            --covered-color: #2e7d32;
+        }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { color: var(--primary); margin: 0; font-size: 2.2rem; }
+        
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 700; margin-bottom: 8px; color: var(--secondary); font-size: 0.9rem; text-transform: uppercase; }
+        
+        textarea, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+        textarea:focus, select:focus { border-color: var(--primary); outline: none; }
+
+        /* Upload Button */
+        .file-upload-wrapper { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .upload-btn { background: #ddd; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .upload-btn:hover { background: #ccc; }
+
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+        .checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; background: #f8f9fa; padding: 6px 14px; border-radius: 20px; border: 1px solid #ddd; font-size: 0.9rem; user-select: none; }
+        .checkbox-label:has(input:checked) { background: var(--primary); color: white; border-color: var(--primary); }
+        input[type="checkbox"] { display: none; }
+
+        .btn { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: var(--secondary); transform: translateY(-2px); }
+
+        .result-card { background: white; border-radius: 10px; border-left: 6px solid var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; overflow: hidden; animation: slideIn 0.4s ease; }
+        .card-header { padding: 15px 25px; background: #fafafa; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .program-title { font-size: 1.25rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .gap-badge { background: #e3f2fd; color: #1565c0; padding: 5px 12px; border-radius: 15px; font-weight: bold; font-size: 0.85rem; }
+        .gap-badge.complete { background: #e8f5e9; color: #2e7d32; }
+        .card-body { padding: 20px 25px; }
+        
+        .section-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: #888; margin: 15px 0 8px 0; letter-spacing: 0.5px; }
+        .missing-list, .covered-list { list-style: none; padding: 0; margin: 0; }
+        
+        .missing-item { padding: 6px 0; padding-left: 20px; position: relative; color: #d32f2f; font-weight: 500; border-bottom: 1px dashed #eee; display: flex; align-items: center; justify-content: space-between; }
+        .missing-item::before { content: "○"; position: absolute; left: 0; color: #d32f2f; }
+        .subset-item { color: #e65100; }
+        .subset-item::before { content: "🔹"; position: absolute; left: 0; }
+        .covered-item { padding: 4px 0; padding-left: 20px; position: relative; color: #2e7d32; font-size: 0.9rem; opacity: 0.8; }
+        .covered-item::before { content: "✅"; position: absolute; left: 0; font-size: 0.8rem; }
+
+        /* Info Tooltip */
+        .info-icon { cursor: pointer; color: #888; font-size: 1.1rem; margin-left: 10px; }
+        .info-icon:hover { color: var(--primary); }
+        .opt-box { background: #fff8e1; border: 1px solid #ffe0b2; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🎓 Degree Optimizer</h1>
+        <p>Find your fastest path to a Minor or Certificate.</p>
+    </div>
+
+    <div class="card">
+        <div class="form-group">
+            <label>1. Select Your Major</label>
+            <select id="majorSelect"><option>Loading...</option></select>
+        </div>
+
+        <div class="form-group">
+            <label>2. Paste Transcript OR Upload PDF</label>
+            <div class="file-upload-wrapper">
+                <input type="file" id="pdfUpload" accept=".pdf" style="display:none" onchange="handleFileUpload()">
+                <button class="upload-btn" onclick="document.getElementById('pdfUpload').click()">📂 Upload PDF</button>
+                <span id="uploadStatus" style="font-size:0.9rem; color:#666;">(Supports Penn State Transcript)</span>
+            </div>
+            <textarea id="historyInput" placeholder="MATH 140, ECON 102, ENGL 15..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>3. GenEds Needed</label>
+            <div class="checkbox-group">
+                <label class="checkbox-label"><input type="checkbox" value="GA"> Arts (GA)</label>
+                <label class="checkbox-label"><input type="checkbox" value="GH"> Humanities (GH)</label>
+                <label class="checkbox-label"><input type="checkbox" value="GS"> Soc/Behavioral (GS)</label>
+                <label class="checkbox-label"><input type="checkbox" value="GN"> Natural Science (GN)</label>
+                <label class="checkbox-label"><input type="checkbox" value="US"> US Cultures</label>
+                <label class="checkbox-label"><input type="checkbox" value="IL"> Int'l Cultures</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>4. Goal</label>
+            <select id="interestFilter">
+                <option value="Minor">Find a Minor</option>
+                <option value="Certificate">Find a Certificate</option>
+            </select>
+        </div>
+
+        <button class="btn" onclick="getRecommendations()">🚀 Analyze My Options</button>
+    </div>
+
+    <div id="results-area"></div>
+</div>
+
+<script>
+    window.onload = async function() {
+        try {
+            const response = await fetch('http://127.0.0.1:5001/majors');
+            const majors = await response.json();
+            const select = document.getElementById('majorSelect');
+            select.innerHTML = '<option value="">-- Select Your Major --</option>';
+            majors.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m;
+                option.textContent = m;
+                select.appendChild(option);
+            });
+        } catch (e) { console.error(e); }
+    };
+
+    async function handleFileUpload() {
+        const fileInput = document.getElementById('pdfUpload');
+        const status = document.getElementById('uploadStatus');
+        const file = fileInput.files[0];
+        
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        status.innerText = "Uploading & Parsing...";
+
+        try {
+            const response = await fetch('http://127.0.0.1:5001/upload_transcript', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                const textArea = document.getElementById('historyInput');
+                const existing = textArea.value.trim();
+                const newCourses = data.courses.join(', ');
+                textArea.value = existing ? existing + ', ' + newCourses : newCourses;
+                status.innerText = `✅ Extracted ${data.courses.length} courses!`;
+                status.style.color = "green";
+            } else {
+                status.innerText = "❌ Error parsing file.";
+                status.style.color = "red";
+            }
+        } catch (e) {
+            status.innerText = "❌ Upload failed.";
+            status.style.color = "red";
+        }
+    }
+
+    async function getRecommendations() {
+        const resultsArea = document.getElementById('results-area');
+        resultsArea.innerHTML = '<div style="text-align:center; color:#666; padding:30px;">🔮 Analyzing...</div>';
+
+        const history = document.getElementById('historyInput').value.replace(/\n/g, ',').split(',').map(c => c.trim().toUpperCase()).filter(c => c.length > 1);
+        const major = document.getElementById('majorSelect').value;
+        const genEds = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+        const filter = document.getElementById('interestFilter').value;
+
+        try {
+            const response = await fetch('http://127.0.0.1:5001/recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ history, major, gen_ed_needs: genEds, interest_filter: filter })
+            });
+            const data = await response.json();
+            resultsArea.innerHTML = '';
+
+            if (!data.recommendations.length) {
+                resultsArea.innerHTML = '<div style="text-align:center;">No matches found.</div>';
+                return;
+            }
+
+            data.recommendations.forEach((rec, index) => {
+                let todoHtml = '';
+                let coveredHtml = '';
+                
+                rec.missing_courses.forEach(item => {
+                    if (item.status === 'major_covered') {
+                        coveredHtml += `<li class="covered-item">${item.text}</li>`;
+                    } else if (item.status === 'subset_missing') {
+                        todoHtml += `<li class="missing-item subset-item">${item.text}</li>`;
+                    } else {
+                        // Add Info Button for Prereqs
+                        let infoBtn = '';
+                        if (item.prereqs) {
+                            infoBtn = `<span class="info-icon" title="Prerequisites: ${item.prereqs}" onclick="alert('Prerequisites for ${item.text}:\\n' + '${item.prereqs}')">ℹ️</span>`;
+                        }
+                        todoHtml += `<li class="missing-item"><span>${item.text}</span>${infoBtn}</li>`;
+                    }
+                });
+
+                let optHtml = '';
+                if (rec.optimizations.length > 0) {
+                    const optList = rec.optimizations.map(o => `<div><strong>${o.course}</strong> covers <em>${o.matches.join(' + ')}</em></div>`).join('');
+                    optHtml = `<div class="opt-box"><div class="opt-title">🔥 Triple Dip Opportunities</div>${optList}</div>`;
+                }
+
+                const badgeClass = rec.gap_credits === 0 ? 'gap-badge complete' : 'gap-badge';
+                const badgeText = rec.gap_credits === 0 ? 'Completed!' : `${Math.ceil(rec.gap_credits)} Credits Needed`;
+
+                const card = `
+                    <div class="result-card">
+                        <div class="card-header">
+                            <a href="${rec.program_url}" target="_blank" class="program-title">#${index + 1} ${rec.program_name}</a>
+                            <span class="${badgeClass}">${badgeText}</span>
+                        </div>
+                        <div class="card-body">
+                            ${optHtml}
+                            ${todoHtml ? `<div class="section-title">⚠️ To-Do List</div><ul class="missing-list">${todoHtml}</ul>` : '<div style="color:green; margin-top:10px;">🎉 You have completed all requirements!</div>'}
+                            ${coveredHtml ? `<div class="section-title" style="margin-top:20px;">✅ Covered by Major</div><ul class="covered-list">${coveredHtml}</ul>` : ''}
+                        </div>
+                    </div>`;
+                resultsArea.innerHTML += card;
+            });
+
+        } catch (error) {
+            resultsArea.innerHTML = '<p style="color:red; text-align:center;">Connection Error.</p>';
+        }
+    }
+</script>
+
+</body>
+</html>
