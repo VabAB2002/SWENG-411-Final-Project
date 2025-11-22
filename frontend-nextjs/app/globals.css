@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  /* Penn State Brand Colors */
+  --color-penn-blue: #1E407C;
+  --color-penn-navy: #001E44;
+  --color-penn-slate: #96A3A3;
+  --color-penn-beaver: #1E407C;
+  --color-penn-light: #E8EFF7;
+  
+  /* Status Colors */
+  --color-success: #2e7d32;
+  --color-warning: #f59e0b;
+  --color-error: #d32f2f;
+  
+  /* Font Family */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Custom Animations */
+  --animate-fade-in: fadeIn 0.5s ease-in-out;
+  --animate-slide-up: slideUp 0.4s ease-out;
+  --animate-slide-down: slideDown 0.3s ease-out;
+  --animate-scale-in: scaleIn 0.3s ease-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { 
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% { 
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  0% { 
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  100% { 
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  0% { 
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+body {
+  @apply bg-gradient-to-br from-penn-light via-white to-gray-50 min-h-screen;
+  font-family: var(--font-sans);
+}
+
+/* Custom Component Utilities */
+@layer components {
+  .card {
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300;
+  }
+  
+  .btn-primary {
+    @apply bg-penn-blue hover:bg-penn-navy text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-all duration-200;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-penn-blue focus:ring-2 focus:ring-penn-blue/20 transition-all duration-200 outline-none;
+  }
+  
+  .checkbox-label {
+    @apply flex items-center gap-2 cursor-pointer bg-gray-50 hover:bg-penn-light px-4 py-2 rounded-full border-2 border-transparent hover:border-penn-blue transition-all duration-200 select-none;
+  }
+  
+  .checkbox-label-checked {
+    @apply bg-penn-blue text-white border-penn-blue;
+  }
+}
