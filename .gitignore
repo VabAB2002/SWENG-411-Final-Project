@@ -58,3 +58,24 @@ htmlcov/
 *.bak
 *.swp
 *~
+
+# Next.js
+.next/
+out/
+*.tsbuildinfo
+
+# Frontend build artifacts
+.vite/
+dist/
+
+# Python bytecode
+*.pyc
+__pycache__/
+
+# Test artifacts
+test_output.txt
+.pytest_cache/
+
+# Backup files
+*.backup
+*.backup_*

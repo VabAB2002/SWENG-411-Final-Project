@@ -47,14 +47,16 @@ project_root/
 │       ├── test_parser.py          # Parser testing
 │       └── Transformation.py       # Data transformation
 │
-├── frontend/                        # React + Vite frontend
-│   ├── src/
-│   │   ├── App.jsx                 # Main application component
-│   │   ├── components/             # Reusable UI components
-│   │   ├── services/               # API service layer
-│   │   └── styles/                 # CSS styles
+├── frontend-nextjs/                 # Next.js 14 + TypeScript frontend
+│   ├── app/                        # Next.js App Router pages
+│   │   ├── page.tsx               # Home page (search & results)
+│   │   ├── layout.tsx             # Root layout
+│   │   └── program/[programId]/   # Dynamic program detail pages
+│   ├── components/                 # Reusable UI components (TSX)
+│   ├── services/                   # API service layer
+│   ├── types/                      # TypeScript type definitions
 │   ├── public/                     # Static assets
-│   └── vite.config.js              # Vite configuration
+│   └── next.config.ts              # Next.js configuration
 │
 ├── docs/                            # Documentation
 │   ├── FRONTEND_SETUP.md           # Frontend setup instructions
@@ -98,11 +100,15 @@ cd backend
 #### 3. Frontend Setup
 
 ```bash
-# Navigate to frontend directory
-cd frontend
+# Navigate to Next.js frontend directory
+cd frontend-nextjs
 
 # Install dependencies
 npm install
+
+# Copy environment variables template
+cp .env.example .env.local
+# Edit .env.local to set your API URL if needed
 ```
 
 ### Running the Application
@@ -126,23 +132,35 @@ The backend API will be available at `http://localhost:5001`
 
 ```bash
 # In a new terminal, navigate to frontend
-cd frontend
+cd frontend-nextjs
 
-# Start Vite dev server
+# Start Next.js dev server
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:5173` (or next available port)
+The frontend will be available at `http://localhost:3000`
+
+**Or use the quick start script:**
+
+```bash
+# From project root
+./start_frontend.sh  # Frontend on port 3000
+./start_backend.sh   # Backend on port 5001
+```
 
 ### Building for Production
 
 ```bash
-# Build frontend
-cd frontend
+# Build Next.js frontend
+cd frontend-nextjs
 npm run build
 
-# The built files will be in frontend/dist/
+# The built files will be in frontend-nextjs/.next/
+# To start production server:
+npm start
 ```
+
+See `docs/DEPLOYMENT_GUIDE.md` for deployment instructions (Vercel + Render).
 
 ## 📊 Data Management
 
@@ -194,13 +212,13 @@ Edit `backend/config/prerequisite_config.json`:
 
 ### Frontend API Configuration
 
-Edit `frontend/src/services/api.js` to change the backend URL:
+Edit `frontend-nextjs/.env.local` to change the backend URL:
 
-```javascript
-const API_BASE_URL = import.meta.env.DEV 
-  ? 'http://127.0.0.1:5001'
-  : '';
+```env
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:5001
 ```
+
+For production, set this in your Vercel environment variables.
 
 ## 🧪 Testing
 
@@ -283,9 +301,11 @@ Gets program recommendations based on completed courses.
 - **Flask-CORS**: Cross-origin resource sharing
 
 ### Frontend
+- **Next.js 14**: React framework with App Router
 - **React 18**: UI framework
-- **Vite**: Build tool and dev server
-- **Tailwind CSS**: Utility-first CSS framework
+- **TypeScript 5**: Type-safe JavaScript
+- **Tailwind CSS 4**: Utility-first CSS framework
+- **Framer Motion**: Animation library
 - **Axios**: HTTP client
 
 ## 🔍 How It Works
@@ -349,7 +369,8 @@ Cost(CMPSC 311) = 3 credits + Cost(CMPSC 221 OR CMPSC 121)
 ### API connection errors
 - Verify backend is running on port 5001
 - Check CORS configuration in `backend/app.py`
-- Verify API URL in `frontend/src/services/api.js`
+- Verify API URL in `frontend-nextjs/.env.local`
+- Make sure the environment variable is prefixed with `NEXT_PUBLIC_`
 
 ### Transcript parsing issues
 - Ensure PDF is a genuine Penn State transcript
