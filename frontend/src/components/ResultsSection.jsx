@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import ProgramCard from './ProgramCard';
+import FilterButtons from './FilterButtons';
 
-const ResultsSection = ({ results }) => {
+const ResultsSection = ({ results, allResults, studentData, activeFilter, onFilterChange }) => {
+  // Calculate counts for each filter
+  const counts = useMemo(() => {
+    if (!allResults) return { all: 0, minors: 0, certificates: 0, genEd: 0 };
+    
+    return {
+      all: allResults.length,
+      minors: allResults.filter(p => p.program_type === 'Minors').length,
+      certificates: allResults.filter(p => p.program_type === 'Certificates').length,
+      genEd: allResults.filter(p => p.program_type === 'General Education').length,
+    };
+  }, [allResults]);
+
   if (!results || results.length === 0) {
     return (
       <motion.div
@@ -11,7 +24,9 @@ const ResultsSection = ({ results }) => {
         animate={{ opacity: 1 }}
       >
         <p className="text-gray-500 text-lg">
-          No matches found. Try adjusting your criteria.
+          {activeFilter !== 'all' 
+            ? `No ${activeFilter} programs found. Try a different filter.`
+            : 'No matches found. Try adjusting your criteria.'}
         </p>
       </motion.div>
     );
@@ -28,13 +43,26 @@ const ResultsSection = ({ results }) => {
         <h2 className="text-3xl font-bold text-penn-blue mb-2">
           Your Personalized Recommendations
         </h2>
-        <p className="text-gray-600">
-          Found {results.length} program{results.length !== 1 ? 's' : ''} ranked by credits needed
+        <p className="text-gray-600 mb-6">
+          Found {results.length} program{results.length !== 1 ? 's' : ''} 
+          {activeFilter !== 'all' ? ` in ${activeFilter}` : ''} ranked by credits needed
         </p>
+
+        {/* Filter Buttons */}
+        <FilterButtons 
+          activeFilter={activeFilter}
+          onFilterChange={onFilterChange}
+          counts={counts}
+        />
       </div>
 
       {results.map((program, index) => (
-        <ProgramCard key={program.id} program={program} index={index} />
+        <ProgramCard 
+          key={program.id} 
+          program={program} 
+          index={index} 
+          studentData={studentData}
+        />
       ))}
     </motion.div>
   );

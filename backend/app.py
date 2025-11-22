@@ -5,6 +5,14 @@ import recommendation_engine as engine
 import transcript_parser
 import traceback
 
+# Try to import database layer (Supabase)
+try:
+    import database
+    USE_DATABASE = True
+except ImportError:
+    USE_DATABASE = False
+    print("⚠️  Warning: database.py not found, using JSON files")
+
 app = Flask(__name__)
 CORS(app)
 
@@ -15,16 +23,38 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 print("⏳ Starting Server...")
 try:
-    PROGRAMS, COURSES, EQUIV_MAP, PREREQ_CONFIG = engine.load_data()
+    # Try to load from Supabase first, fallback to JSON files
+    if USE_DATABASE:
+        try:
+            PROGRAMS, COURSES, EQUIV_MAP, PREREQ_CONFIG = database.load_all_data()
+            print("✓ Using Supabase database")
+        except Exception as db_error:
+            print(f"⚠️  Supabase not configured: {db_error}")
+            print("⚠️  Falling back to JSON files...")
+            PROGRAMS, COURSES, EQUIV_MAP, PREREQ_CONFIG = engine.load_data()
+            print("✓ Using JSON files")
+    else:
+        PROGRAMS, COURSES, EQUIV_MAP, PREREQ_CONFIG = engine.load_data()
+        print("✓ Using JSON files")
+    
     MAJOR_LIST = sorted([p['id'] for p in PROGRAMS if p['type'] == 'Majors'])
     print(f"✅ Server Ready! Loaded {len(MAJOR_LIST)} majors.")
 except Exception as e:
     print(f"❌ CRITICAL ERROR: {e}")
+    traceback.print_exc()
     PROGRAMS, COURSES, EQUIV_MAP, PREREQ_CONFIG, MAJOR_LIST = [], {}, {}, {}, []
 
 @app.route('/majors', methods=['GET'])
 def get_majors():
     return jsonify(MAJOR_LIST)
+
+@app.route('/courses', methods=['GET'])
+def get_courses():
+    """Return all course data for prerequisite tree visualization."""
+    return jsonify({
+        "status": "success",
+        "courses": COURSES
+    })
 
 @app.route('/upload_transcript', methods=['POST'])
 def upload_transcript():
@@ -75,18 +105,22 @@ def get_recommendations():
             
             gap, missing = engine.calculate_program_gap(prog, combined_history, COURSES, major_courses, EQUIV_MAP, PREREQ_CONFIG)
             triple_dips = engine.find_triple_dips(prog, user_gen_ed_needs, COURSES)
+            overlap_count, overlap_courses = engine.calculate_overlap_count(prog, user_history, major_courses)
             
             results.append({
                 "id": prog['id'],
                 "program_name": prog['id'],
+                "program_type": prog['type'],
                 "program_url": prog.get('url', '#'),
                 "gap_credits": gap,
                 "missing_courses": missing,
                 "optimizations": triple_dips,
-                "optimization_count": len(triple_dips)
+                "optimization_count": len(triple_dips),
+                "overlap_count": overlap_count,
+                "overlap_courses": overlap_courses
             })
 
-        results.sort(key=lambda x: (x['gap_credits'], -x['optimization_count']))
+        results.sort(key=lambda x: (x['gap_credits'], -x['overlap_count'], -x['optimization_count']))
 
         return jsonify({
             "status": "success",

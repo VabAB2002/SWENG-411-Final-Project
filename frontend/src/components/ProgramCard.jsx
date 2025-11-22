@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaExternalLinkAlt, FaStar, FaCheckCircle } from 'react-icons/fa';
 import CourseChip from './CourseChip';
 
-const ProgramCard = ({ program, index }) => {
+const ProgramCard = ({ program, index, studentData }) => {
+  const navigate = useNavigate();
   const isCompleted = program.gap_credits === 0;
   const todoItems = program.missing_courses.filter(
     c => c.status !== 'major_covered'
@@ -12,13 +14,26 @@ const ProgramCard = ({ program, index }) => {
     c => c.status === 'major_covered'
   );
 
+  const handleCardClick = (e) => {
+    // Don't navigate if clicking on external link
+    if (e.target.closest('a[target="_blank"]')) {
+      return;
+    }
+    
+    // Navigate to detail page with program and student data
+    navigate(`/program/${encodeURIComponent(program.program_name)}`, {
+      state: { program, studentData }
+    });
+  };
+
   return (
     <motion.div
-      className="card overflow-hidden"
+      className="card overflow-hidden cursor-pointer"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1, duration: 0.4 }}
       whileHover={{ y: -5 }}
+      onClick={handleCardClick}
     >
       {/* Header */}
       <div className="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b-2 border-gray-100 flex items-center justify-between">

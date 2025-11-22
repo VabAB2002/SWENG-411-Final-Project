@@ -14102,23 +14102,19 @@
       },
       {
         "name": "Supporting Courses and Related Areas (6 credits)",
-        "type": "subset",
-        "credits_needed": 3,
-        "courses": [
-          {
-            "code": "ENGL 419",
-            "credits": 3,
-            "title": "Advanced Business Writing",
-            "description": "Preparing and editing reports and presentations common to business, industry, and government.",
-            "prerequisites_text": "Prerequisite ENGL 202A,ENGL 202B,ENGL 202C,ENGL 202D",
-            "prerequisites_list": [
-              "ENGL 202",
-              "ENGL 202",
-              "ENGL 202",
-              "ENGL 202"
-            ]
+        "type": "dynamic_subset",
+        "credits_needed": 6,
+        "constraints": {
+          "primary_pool": {
+            "departments": ["ENTR"],
+            "level_min": 400,
+            "level_max": 999,
+            "min_credits_needed": 3
+          },
+          "secondary_pool": {
+            "courses": ["ENGL 419", "ACCTG 400", "ACCTG 401", "ACCTG 403", "ACCTG 404", "ACCTG 405", "ACCTG 406", "ACCTG 407", "ACCTG 408", "ACCTG 409", "ACCTG 410", "ACCTG 411", "ACCTG 415", "ACCTG 416", "ACCTG 421", "ACCTG 422", "ACCTG 428", "ACCTG 471", "ACCTG 475", "BA 402", "BA 404", "BA 405", "BA 406", "BA 420", "BA 421", "BA 424", "BA 450", "BA 460", "BA 470", "ECON 402", "ECON 404", "ECON 405", "ECON 406", "ECON 409", "ECON 411", "ECON 413", "ECON 414", "ECON 417", "ECON 420", "ECON 425", "ECON 433", "ECON 441", "ECON 442", "ECON 443", "ECON 444", "ECON 445", "ECON 451", "ECON 453", "ECON 461", "ECON 466", "ECON 471", "FIN 400", "FIN 401", "FIN 402", "FIN 403", "FIN 404", "FIN 406", "FIN 407", "FIN 408", "FIN 409", "FIN 410", "FIN 411", "FIN 420", "FIN 421", "FIN 423", "FIN 424", "FIN 425", "FIN 435", "FIN 436", "FIN 440", "FIN 441", "FIN 443", "FIN 461", "FIN 471", "FIN 485", "FIN 488", "MGMT 401", "MGMT 404", "MGMT 405", "MGMT 408", "MGMT 409", "MGMT 410", "MGMT 416", "MGMT 417", "MGMT 419", "MGMT 421", "MGMT 422", "MGMT 424", "MGMT 430", "MGMT 440", "MGMT 443", "MGMT 444", "MGMT 451", "MGMT 475", "MGMT 489", "MKTG 401", "MKTG 404", "MKTG 405", "MKTG 407", "MKTG 408", "MKTG 409", "MKTG 411", "MKTG 419", "MKTG 420", "MKTG 421", "MKTG 422", "MKTG 423", "MKTG 424", "MKTG 425", "MKTG 427", "MKTG 429", "MKTG 432", "MKTG 460", "MKTG 461", "MKTG 462", "MKTG 463", "MKTG 466", "MKTG 475", "SCM 400", "SCM 401", "SCM 403", "SCM 407", "SCM 410", "SCM 420", "SCM 421", "SCM 430", "SCM 441", "SCM 450", "SCM 471", "SCM 475"]
           }
-        ]
+        }
       }
     ]
   },
@@ -15156,107 +15152,20 @@
         ]
       },
       {
-        "name": "Supporting Courses and Related Areas (select 6 credits)",
-        "type": "subset",
+        "name": "Supporting Courses (select 6 credits)",
+        "type": "dynamic_subset",
         "credits_needed": 6,
-        "courses": [
-          {
-            "code": "BA 100",
-            "credits": 3,
-            "title": "Introduction to Business",
-            "description": "A comprehensive view of the contemporary environment of business. This course provides a broad overview of the study of business and its environment, organization, operation, and interrelationships with government and society.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
+        "constraints": {
+          "primary_pool": {
+            "departments": ["ACCTG", "BA", "EBF", "ECON", "ENTR", "FIN", "HPA", "IB", "LHR", "MIS", "MGMT", "MKTG", "SCM", "STAT"],
+            "level_min": 400,
+            "level_max": 999,
+            "min_credits_needed": 3
           },
-          {
-            "code": "LHR 427",
-            "credits": 3,
-            "title": "Understanding Business Processes for LHR Professionals",
-            "description": "This course examines human resource management (HRM) and employment relations (ER) from a strategic perspective embedded in a complex and evolving organizational system.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "OLEAD 220",
-            "credits": 3,
-            "title": "Emotional, Social, and Cultural Intelligences and the Implications for Leadership",
-            "description": "This course focuses on emotional intelligence, social, cultural intelligence competencies used to develop the leadership capacity to be self-aware, understand oneself and others, and to work across cultural differences to effectively meet the demands of work.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "OLEAD 230",
-            "credits": 3,
-            "title": "Leadership Across Industries",
-            "description": "Compares and contrasts leadership in different types of industries. In this course students will learn about the various types of organizations and examine why leadership in those organizations have some leadership characteristics that are similar and others that are different.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "OLEAD 409",
-            "credits": 3,
-            "title": "Leadership Development: A Lifelong Learning Perspective",
-            "description": "The course examines the continuing influence of social and environmental factors in shaping leadership and leadership development.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "LHR 409",
-            "credits": 3,
-            "title": "Leadership Development: A Lifelong Learning Perspective",
-            "description": "The course examines the continuing influence of social and environmental factors in shaping leadership and leadership development.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "OLEAD 410",
-            "credits": 3,
-            "title": "Leadership in a Global Context",
-            "description": "This course explores the science and practice of leadership around the globe through pertinent scholarly literature and related instructional resources.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "OLEAD 411",
-            "credits": 3,
-            "title": "Women and Leadership",
-            "description": "Overviews scholarship relating to women in positions of leadership in groups and organizations, as well as obstacles to their success.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "OLEAD 465",
-            "credits": 3,
-            "title": "Collective Decision-Making",
-            "description": "Application of theories of decision-making to work-related issues in groups and organizations requiring collective resolution and action.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "LHR 465",
-            "credits": 3,
-            "title": "Collective Decision-Making",
-            "description": "Application of theories of decision making to work-related issues in groups and organizations requiring collective resolution and action.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "OLEAD 495",
-            "credits": 1,
-            "title": "OLEAD Internship",
-            "description": "Supervised practicum in organizational leadership.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
-          },
-          {
-            "code": "OLEAD 496",
-            "credits": 1,
-            "title": "Independent Study",
-            "description": "Creative projects, including research and design, which are supervised on an individual basis and which fall outside the scope of formal courses.",
-            "prerequisites_text": "",
-            "prerequisites_list": []
+          "secondary_pool": {
+            "courses": ["CAS 404", "CRIMJ 408", "ENGL 419", "ETI 420", "HDFS 455", "IST 402", "IST 432", "PSYCH 484", "PSYCH 485", "SOC 455", "SOC 456", "SOC 467"]
           }
-        ]
+        }
       }
     ]
   },

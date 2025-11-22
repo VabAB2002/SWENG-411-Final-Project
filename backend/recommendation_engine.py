@@ -240,22 +240,22 @@ def calculate_program_gap(program, user_history, courses_db, major_courses=[], e
                 code_norm = normalize_code(code_display)
                 rule_credits = course.get('credits', 3.0)
 
+                # For REQUIRED courses, check EXACT match only (no equivalency/hierarchy)
+                # Equivalency and hierarchy rules should only apply to PREREQUISITES
                 if code_norm in user_history: continue 
                 if code_norm in major_courses:
                     missing_courses.append({"text": f"{code_display} (Covered by Major)", "status": "major_covered"})
                     continue 
                 
-                cost = calculate_recursive_cost(code_display, user_history, courses_db, known_credits=rule_credits, equivalency_map=equivalency_map, prereq_config=prereq_config)
-                if cost > 0:
-                    total_gap_credits += cost
-                    # Add Prereq info here for UI
-                    prereqs = get_course_prereqs(code_display, courses_db)
-                    missing_courses.append({
-                        "text": code_display, 
-                        "status": "missing",
-                        "prereqs": prereqs,
-                        "credits": rule_credits
-                    })
+                # Course is missing - add to gap (just the course itself, no prerequisites)
+                total_gap_credits += rule_credits
+                prereqs = get_course_prereqs(code_display, courses_db)
+                missing_courses.append({
+                    "text": code_display, 
+                    "status": "missing",
+                    "prereqs": prereqs,
+                    "credits": rule_credits
+                })
         
         elif rule.get('type') == 'subset':
             credits_needed = rule.get('credits_needed', 0)
@@ -333,3 +333,83 @@ def find_triple_dips(program, user_needs, courses_db):
             if matches:
                 opportunities.append({"course": c_data['courseCode'], "matches": matches, "title": c_data.get('title', '')})
     return opportunities
+
+def calculate_overlap_count(program, user_history, major_courses):
+    """
+    Calculate how many courses from user's history overlap with program requirements.
+    
+    This provides the "Overlap Count" metric shown in documentation, complementing
+    the "Gap Credits" metric.
+    
+    Args:
+        program: Program dict with rules
+        user_history: List of normalized course codes from user's transcript
+        major_courses: List of normalized course codes from user's major
+    
+    Returns:
+        tuple: (overlap_count, overlapping_courses_list)
+    """
+    combined_history = set(user_history + major_courses)
+    overlapping_courses = []
+    
+    for rule in program.get('rules', []):
+        if rule.get('type') == 'all':
+            for course in rule.get('courses', []):
+                code_norm = normalize_code(course['code'])
+                if code_norm in combined_history:
+                    overlapping_courses.append(course['code'])
+        
+        elif rule.get('type') == 'subset':
+            for course in rule.get('courses', []):
+                code_norm = normalize_code(course['code'])
+                if code_norm in combined_history:
+                    overlapping_courses.append(course['code'])
+        
+        elif rule.get('type') == 'dynamic_subset':
+            # Check primary pool (department-level matches)
+            constraints = rule.get('constraints', {})
+            primary_pool = constraints.get('primary_pool', {})
+            departments = primary_pool.get('departments', [])
+            level_min = primary_pool.get('level_min', 0)
+            level_max = primary_pool.get('level_max', 999)
+            
+            for norm_code in combined_history:
+                dept, number = parse_course_string(norm_code)
+                if dept and dept in departments:
+                    if level_min <= number <= level_max:
+                        # Get the original course code format from user_history
+                        # Find matching course in original format
+                        for orig_code in user_history + major_courses:
+                            if normalize_code(orig_code) == norm_code:
+                                # Check normalized codes to avoid duplicates like "ECON471" and "ECON 471"
+                                if normalize_code(orig_code) not in [normalize_code(c) for c in overlapping_courses]:
+                                    overlapping_courses.append(orig_code)
+                                break
+            
+            # Check secondary pool courses (specific courses)
+            secondary = rule.get('constraints', {}).get('secondary_pool', {}).get('courses', [])
+            for course_code in secondary:
+                code_norm = normalize_code(course_code)
+                if code_norm in combined_history:
+                    # Check normalized codes to avoid duplicates
+                    if code_norm not in [normalize_code(c) for c in overlapping_courses]:
+                        overlapping_courses.append(course_code)
+        
+        elif rule.get('type') == 'group_option':
+            # Check all courses in all groups
+            for group in rule.get('groups', []):
+                for course in group.get('courses', []):
+                    code_norm = normalize_code(course['code'])
+                    if code_norm in combined_history:
+                        overlapping_courses.append(course['code'])
+    
+    # Remove duplicates while preserving order (normalize before comparing)
+    seen = set()
+    unique_overlapping = []
+    for c in overlapping_courses:
+        normalized = normalize_code(c)
+        if normalized not in seen:
+            seen.add(normalized)
+            unique_overlapping.append(c)
+    
+    return len(unique_overlapping), unique_overlapping
