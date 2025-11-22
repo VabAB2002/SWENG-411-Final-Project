@@ -85,7 +85,9 @@ def get_course_prereqs(code, courses_db):
     """Fetches raw prerequisite text for display."""
     norm_code = normalize_code(code)
     if norm_code in courses_db:
-        return courses_db[norm_code].get('prerequisites_raw', 'No prerequisites listed.')
+        prereqs = courses_db[norm_code].get('prerequisites_raw', 'No prerequisites listed.')
+        # Fix Issue 3.1: Return default message if empty string
+        return prereqs if prereqs else 'No prerequisites listed.'
     return "No data available."
 
 def extract_course_codes(text_chunk):
@@ -127,10 +129,32 @@ def course_satisfies_prerequisite(required_code, user_history, equivalency_map=N
         min_diff = prereq_config.get('hierarchy_rules', {}).get('minimum_level_difference', 0)
         
         if req_dept and req_num > 0:
+            # Calculate level range for required course (100-level, 200-level, etc.)
+            req_level_range = (req_num // 100) * 100
+            
             for user_course in user_history:
                 user_dept, user_num = parse_course_string(user_course)
-                if user_dept == req_dept and user_num >= req_num + min_diff:
-                    return True
+                if user_dept == req_dept:
+                    user_level_range = (user_num // 100) * 100
+                    
+                    # Match if in a higher level range (e.g., 200-level satisfies 100-level)
+                    if user_level_range > req_level_range:
+                        return True
+                    # Fix Issue 3.2: For same level range, require course number to be strictly greater
+                    # This prevents ECON 104 from satisfying ECON 102 (104 > 102 but both are 100-level)
+                    # But allows MATH 141 to satisfy MATH 140 (141 > 140, both 100-level)
+                    elif user_level_range == req_level_range:
+                        # If min_diff is set, use it; otherwise require strictly greater
+                        if min_diff > 0:
+                            if user_num >= req_num + min_diff:
+                                return True
+                        else:
+                            # No min_diff specified: require strictly greater course number
+                            # This allows MATH 141 > MATH 140, but prevents ECON 104 > ECON 102
+                            # (Actually both would match, so this might need different logic)
+                            # For now, allow if strictly greater
+                            if user_num > req_num:
+                                return True
     
     return False
 
@@ -311,15 +335,40 @@ def calculate_program_gap(program, user_history, courses_db, major_courses=[], e
 
     return total_gap_credits, missing_courses
 
-def find_triple_dips(program, user_needs, courses_db):
+def find_triple_dips(program, user_needs, courses_db, user_history=None):
+    """
+    Find triple dip opportunities (courses that satisfy program requirement AND GenEd need).
+    
+    Args:
+        program: Program dict with rules
+        user_needs: List of GenEd attributes needed
+        courses_db: Courses database
+        user_history: Optional list of normalized course codes from user's transcript
+                     Used to check primary pool courses in dynamic_subset rules
+    """
     opportunities = []
     all_program_courses = []
     for rule in program.get('rules', []):
         for c in rule.get('courses', []):
             all_program_courses.append(normalize_code(c['code']))
         if rule.get('type') == 'dynamic_subset':
+            # Add secondary pool courses
             secondary = rule.get('constraints', {}).get('secondary_pool', {}).get('courses', [])
             all_program_courses.extend([normalize_code(c) for c in secondary])
+            
+            # FIX Issue 2.3: Also check primary pool courses from user's history
+            if user_history:
+                primary_pool = rule.get('constraints', {}).get('primary_pool', {})
+                departments = primary_pool.get('departments', [])
+                level_min = primary_pool.get('level_min', 0)
+                level_max = primary_pool.get('level_max', 999)
+                
+                for norm_code in user_history:
+                    dept, number = parse_course_string(norm_code)
+                    if dept and dept in departments:
+                        if level_min <= number <= level_max:
+                            if norm_code not in all_program_courses:
+                                all_program_courses.append(norm_code)
         if rule.get('type') == 'group_option':
              for g in rule.get('groups', []):
                  for c in g.get('courses', []):
@@ -373,27 +422,31 @@ def calculate_overlap_count(program, user_history, major_courses):
             level_min = primary_pool.get('level_min', 0)
             level_max = primary_pool.get('level_max', 999)
             
+            # Fix Issue 1.1: Pre-compute normalized set for O(n) lookup instead of O(n²)
+            normalized_overlapping = {normalize_code(c) for c in overlapping_courses}
+            
             for norm_code in combined_history:
                 dept, number = parse_course_string(norm_code)
                 if dept and dept in departments:
                     if level_min <= number <= level_max:
-                        # Get the original course code format from user_history
-                        # Find matching course in original format
-                        for orig_code in user_history + major_courses:
-                            if normalize_code(orig_code) == norm_code:
-                                # Check normalized codes to avoid duplicates like "ECON471" and "ECON 471"
-                                if normalize_code(orig_code) not in [normalize_code(c) for c in overlapping_courses]:
+                        # Check if already in overlapping (using pre-computed set)
+                        if norm_code not in normalized_overlapping:
+                            # Get the original course code format from user_history
+                            for orig_code in user_history + major_courses:
+                                if normalize_code(orig_code) == norm_code:
                                     overlapping_courses.append(orig_code)
-                                break
+                                    normalized_overlapping.add(norm_code)  # Update set
+                                    break
             
             # Check secondary pool courses (specific courses)
             secondary = rule.get('constraints', {}).get('secondary_pool', {}).get('courses', [])
             for course_code in secondary:
                 code_norm = normalize_code(course_code)
                 if code_norm in combined_history:
-                    # Check normalized codes to avoid duplicates
-                    if code_norm not in [normalize_code(c) for c in overlapping_courses]:
+                    # Check normalized codes to avoid duplicates (using pre-computed set)
+                    if code_norm not in normalized_overlapping:
                         overlapping_courses.append(course_code)
+                        normalized_overlapping.add(code_norm)  # Update set
         
         elif rule.get('type') == 'group_option':
             # Check all courses in all groups

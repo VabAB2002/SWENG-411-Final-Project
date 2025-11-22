@@ -104,7 +104,7 @@ def get_recommendations():
             if interest_filter.lower() not in prog['type'].lower(): continue
             
             gap, missing = engine.calculate_program_gap(prog, combined_history, COURSES, major_courses, EQUIV_MAP, PREREQ_CONFIG)
-            triple_dips = engine.find_triple_dips(prog, user_gen_ed_needs, COURSES)
+            triple_dips = engine.find_triple_dips(prog, user_gen_ed_needs, COURSES, user_history)
             overlap_count, overlap_courses = engine.calculate_overlap_count(prog, user_history, major_courses)
             
             results.append({
